@@ -1,6 +1,8 @@
 <?php
   include 'koneksi/koneksi_lokal.php';
   include 'koneksi/koneksi_pusat.php';
+  include 'koneksi/koneksi_resepsionis.php';
+
   // timezone
   date_default_timezone_set('Asia/Jakarta');
 
@@ -22,41 +24,61 @@
 
   if(isset($_POST['submit'])){
     $id_daftar = $_POST['id_daftar'];
-    $tgl_daftar = $_POST['tgl_daftar'];
-    $id_pasien = $_POST['id_pasien'];
-    $daftar_pelayanan = $_POST['daftar_pelayanan'];
-    $daftar_perawat = $_POST['daftar_perawat'];
+    $id_dokter = $_POST['daftar_dokter'];
+    $anamnesa = $_POST['anamnesa'];
+    $diagnosis = $_POST['diagnosis'];
+    $pemeriksaan = $_POST['pemeriksaan'];
+    $terapi = $_POST['terapi'];
+    $status = $_POST['status'];
 
-    // input to database pasien
-    $query_pasien = oci_parse($conn_lokal, "INSERT INTO rekam_medis (id_daftar, tgl_daftar, id_pasien, id_pelayanan, id_perawat) VALUES (:id_daftar, to_date(:tgl_daftar, 'YYYY-MM-DD'), :id_pasien, :id_pelayanan, :id_perawat)");
-    oci_bind_by_name($query_pasien, ":id_daftar", $id_daftar);
-    oci_bind_by_name($query_pasien, ":tgl_daftar", $tgl_daftar);
-    oci_bind_by_name($query_pasien, ":id_pasien", $id_pasien);
-    oci_bind_by_name($query_pasien, ":id_pelayanan", $daftar_pelayanan);
-    oci_bind_by_name($query_pasien, ":id_perawat" , $daftar_perawat);
+    // input to database dokter
+    $query_dokter = oci_parse($conn_lokal, "UPDATE rekam_medis SET id_dokter = :id_dokter, anamnesa = :anamnesa, diagnosis = :diagnosis, pemeriksaan = :pemeriksaan, terapi = :terapi, status = :status");
+    oci_bind_by_name($query_dokter, ":id_dokter", $id_dokter);
+    oci_bind_by_name($query_dokter, ":anamnesa", $anamnesa);
+    oci_bind_by_name($query_dokter, ":diagnosis", $diagnosis);
+    oci_bind_by_name($query_dokter, ":pemeriksaan", $pemeriksaan);
+    oci_bind_by_name($query_dokter, ":terapi" , $terapi);
+    oci_bind_by_name($query_dokter, ":status" , $status);
 
-    $result_pasien = oci_execute($query_pasien);
+    $result_dokter = oci_execute($query_dokter);
     oci_commit($conn_lokal);
 
     oci_close($conn_lokal);
 
+    // input to database resepsionis
+    $query_resepsionis = oci_parse($conn_resepsionis, "UPDATE rekam_medis SET id_dokter = :id_dokter, anamnesa = :anamnesa, diagnosis = :diagnosis, pemeriksaan = :pemeriksaan, terapi = :terapi, status = :status");
+    oci_bind_by_name($query_resepsionis, ":id_dokter", $id_dokter);
+    oci_bind_by_name($query_resepsionis, ":anamnesa", $anamnesa);
+    oci_bind_by_name($query_resepsionis, ":diagnosis", $diagnosis);
+    oci_bind_by_name($query_resepsionis, ":pemeriksaan", $pemeriksaan);
+    oci_bind_by_name($query_resepsionis, ":terapi" , $terapi);
+    oci_bind_by_name($query_resepsionis, ":status" , $status);
+
+    $result_resepsionis = oci_execute($query_resepsionis);
+    oci_commit($conn_resepsionis);
+
+    oci_close($conn_resepsionis);
+
     // input to database pusat
-    $query_pusat = oci_parse($conn_pusat, "INSERT INTO rekam_medis (id_daftar, tgl_daftar, id_pasien, id_pelayanan, id_perawat) VALUES (:id_daftar, to_date(:tgl_daftar, 'YYYY-MM-DD'), :id_pasien, :id_pelayanan, :id_perawat)");
-    oci_bind_by_name($query_pusat, ":id_daftar", $id_daftar);
-    oci_bind_by_name($query_pusat, ":tgl_daftar", $tgl_daftar);
-    oci_bind_by_name($query_pusat, ":id_pasien", $id_pasien);
-    oci_bind_by_name($query_pusat, ":id_pelayanan", $daftar_pelayanan);
-    oci_bind_by_name($query_pusat, ":id_perawat" , $daftar_perawat);
+    $query_pusat = oci_parse($conn_pusat, "UPDATE rekam_medis SET id_dokter = :id_dokter, anamnesa = :anamnesa, diagnosis = :diagnosis, pemeriksaan = :pemeriksaan, terapi = :terapi, status = :status");
+    oci_bind_by_name($query_pusat, ":id_dokter", $id_dokter);
+    oci_bind_by_name($query_pusat, ":anamnesa", $anamnesa);
+    oci_bind_by_name($query_pusat, ":diagnosis", $diagnosis);
+    oci_bind_by_name($query_pusat, ":pemeriksaan", $pemeriksaan);
+    oci_bind_by_name($query_pusat, ":terapi" , $terapi);
+    oci_bind_by_name($query_pusat, ":status" , $status);
 
     $result_pusat = oci_execute($query_pusat);
     oci_commit($conn_pusat);
 
-    if ($result_pasien && $result_pusat) {
+    oci_close($conn_pusat);
+
+    if ($result_dokter && $result_resepsionis && $result_pusat) {
       $status = "berhasil";
     }else{
       $status = "gagal";
     }
-    oci_close($conn_pusat);
+
   }
 
 ?>
@@ -126,103 +148,94 @@
                   <?php
                 }
               ?>
-              <form action="daftar_lama.php" method="post" autocomplete="off">
+              <form action="pengobatan.php" method="post" autocomplete="off">
               <div class="row">
                 <!-- form kiri -->
-                <div class="col-md-8">
+                <div class="col-md-6">
                   <div class="kotak">
                     <div class="form-group">
                       <label>No. Pendaftaran</label>
-                      <input type="text" name="id_daftar" class="form-control" value="<?php echo $id_rekam_medis; ?>" readonly="true">
+                      <input type="text" name="id_daftar" class="form-control" id="id_daftar">
+                      <small class="detail-form">Nomor pendaftaran pasien. Harus diisi.</small>
                     </div>
                     <div class="form-group">
                       <label>ID Pasien</label>
-                      <input type="text" name="id_pasien" id="id_pasien" class="form-control">
-                      <small class="detail-form">Nomor member pasien. Ketik manual jika nomor pasien tidak tampil.</small>
+                      <input type="text" name="id_pasien" class="form-control" readonly="true">
                     </div>
                     <div class="form-group">
                       <label>Tanggal Daftar</label>
-                      <input type="date" name="tgl_daftar" class="form-control" readonly="true" value="<?php echo date("Y-m-d"); ?>">
+                      <input type="text" name="tgl_daftar" class="form-control" readonly="true">
                     </div>
                     <div class="form-group">
                       <label>Nama Pasien</label>
                       <input type="text" name="nama_pasien" class="form-control" readonly="true">
                     </div>
                     <div class="form-group">
-                      <label>Nama Orang Tua</label>
-                      <input type="text" name="nama_ortu" class="form-control" readonly="true">
-                    </div>
-                    <div class="form-group">
-                      <label>Alamat Asal</label>
-                      <input type="text" name="alamat_asal" class="form-control" readonly="true">
-                    </div>
-                    <div class="form-group">
-                      <label>Alamat Domisili</label>
-                      <input type="text" name="alamat_domisili" class="form-control" readonly="true">
-                    </div>
-                    <div class="form-group">
-                      <label>Tempat Lahir</label>
-                      <input type="text" name="tempat_lahir" class="form-control" readonly="true">
-                    </div>
-                    <div class="form-group">
-                      <label>Tanggal Lahir</label>
-                      <input type="text" name="tgl_lahir" class="form-control" readonly="true">
-                    </div>
-                    <div class="form-group">
                       <label>Umur</label>
                       <input type="text" name="umur" class="form-control" readonly="true">
-                    </div>
-                    <div class="form-group">
-                      <label>Pekerjaan</label>
-                      <input type="text" name="pekerjaan" class="form-control" readonly="true">
-                    </div>
-                    <div class="form-group">
-                      <label>Nomor Telepon</label>
-                      <input type="text" name="telp" class="form-control" readonly="true">
                     </div>
                     <div class="form-group">
                       <label>Golongan Darah</label>
                       <input type="text" name="gol_darah" class="form-control" readonly="true">
                     </div>
+                    <div class="form-group">
+                      <label>Nama Pelayanan</label>
+                      <input type="text" name="nama_pelayanan" class="form-control" readonly="true">
+                    </div>
+                    <div class="form-group">
+                      <label>Nama Perawat</label>
+                      <input type="text" name="nama_perawat" class="form-control" readonly="true">
+                    </div>
                   </div>
                 </div>
                 <!-- end form kiri -->
                 <!-- form kanan -->
-                <div class="col-md-4">
-                  <!-- form poli -->
+                <div class="col-md-6">
+                  <!-- form dokter -->
                   <div class="kotak">
                     <div class="form-group">
-                      <label>Daftar Pelayanan</label>
-                      <select class="form-control" name="daftar_pelayanan">
-                        <option>-- Pilih Pelayanan --</option>
+                      <label>Daftar Dokter</label>
+                      <select class="form-control" name="daftar_dokter">
+                        <option>-- Pilih Dokter --</option>
                         <?php
-                          $data_pelayanan = "SELECT * FROM pelayanan";
-                          $pelayanan = oci_parse($conn_lokal, $data_pelayanan);
-                          oci_execute($pelayanan);
+                          $data_dokter = "SELECT * FROM dokter";
+                          $dokter = oci_parse($conn_lokal, $data_dokter);
+                          oci_execute($dokter);
 
-                          while (($row = oci_fetch_array($pelayanan, OCI_BOTH)) != false) {
-                            ?><option value="<?php echo $row['ID_PELAYANAN']; ?>"><?php echo $row['NAMA_PELAYANAN']; ?></option> <?php
+                          while (($row = oci_fetch_array($dokter, OCI_BOTH)) != false) {
+                            ?><option value="<?php echo $row['ID_DOKTER']; ?>"><?php echo $row['NAMA_DOKTER']; ?></option> <?php
                           }
                         ?>
                       </select>
                     </div>
-                  </div>
-                  <!-- form dokter -->
-                  <div class="kotak">
                     <div class="form-group">
-                      <label>Daftar Perawat</label>
-                      <select class="form-control" name="daftar_perawat">
-                        <option>-- Pilih Perawat --</option>
-                        <?php
-                          $data_perawat = "SELECT * FROM perawat";
-                          $perawat = oci_parse($conn_lokal, $data_perawat);
-                          oci_execute($perawat);
-
-                          while (($row = oci_fetch_array($perawat, OCI_BOTH)) != false) {
-                            ?><option value="<?php echo $row['ID_PERAWAT']; ?>"><?php echo $row['NAMA_PERAWAT']; ?></option> <?php
-                          }
-                        ?>
+                      <label>Anamnesa</label>
+                      <input type="text" name="anamnesa" class="form-control">
+                      <small class="detail-form">Anamnesa dokter. Harus diisi. Jika tidak ada isikan 'Tidak Ada'.</small>
+                    </div>
+                    <div class="form-group">
+                      <label>Diagnosis</label>
+                      <input type="text" name="diagnosis" class="form-control">
+                      <small class="detail-form">Hasil diagnosis dokter. Harus diisi. Jika tidak ada isikan 'Tidak Ada'.</small>
+                    </div>
+                    <div class="form-group">
+                      <label>Hasil Pemeriksaan</label>
+                      <input type="text" name="pemeriksaan" class="form-control">
+                      <small class="detail-form">Hasil pemeriksaan dokter. Harus diisi. Jika tidak ada isikan 'Tidak Ada'.</small>
+                    </div>
+                    <div class="form-group">
+                      <label>Terapi</label>
+                      <input type="text" name="terapi" class="form-control">
+                      <small class="detail-form">Terapi pasien. Harus diisi. Jika tidak ada isikan 'Tidak Ada'.</small>
+                    </div>
+                    <div class="form-group">
+                      <label>Status</label>
+                      <select class="form-control" name="status">
+                        <option>-- Pilih Status --</option>
+                        <option value="sudah">Sudah diperiksa</option>
+                        <option value="belum">Belum diperiksa</option>
                       </select>
+                      <small class="detail-form">Status pengobatan pasien. Harus diisi.</small>
                     </div>
                   </div>
                   <!-- button -->
@@ -249,21 +262,17 @@
 
     <script type="text/javascript">
       $(function(){
-        $("#id_pasien").autocomplete({
-          source: "datapasien.php",
+        $("#id_daftar").autocomplete({
+          source: "datapengobatan.php",
           minLength:2,
           select:function(event, data){
+            $('input[name=id_pasien]').val(data.item.id_pasien);
+            $('input[name=tgl_daftar]').val(data.item.tgl_daftar);
             $('input[name=nama_pasien]').val(data.item.nama_pasien);
-            $('input[name=nama_ortu]').val(data.item.nama_ortu);
-            $('input[name=jenis_kelamin]').val(data.item.jenis_kelamin);
-            $('input[name=tempat_lahir]').val(data.item.tempat_lahir);
-            $('input[name=tgl_lahir]').val(data.item.tgl_lahir);
             $('input[name=umur]').val(data.item.umur);
-            $('input[name=alamat_asal]').val(data.item.alamat_asal);
-            $('input[name=alamat_domisili]').val(data.item.alamat_domisili);
-            $('input[name=pekerjaan]').val(data.item.pekerjaan);
-            $('input[name=telp]').val(data.item.telp);
             $('input[name=gol_darah]').val(data.item.gol_darah);
+            $('input[name=nama_pelayanan]').val(data.item.nama_pelayanan);
+            $('input[name=nama_perawat]').val(data.item.nama_perawat);
           }
         })
       });

@@ -49,7 +49,9 @@ table td:last-child{
 }
 
 .btn-daftar{
+  width: 150px;
   margin-top: 20px;
+
 }
 
 .table-scroll{
