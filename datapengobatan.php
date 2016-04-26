@@ -9,13 +9,15 @@
   // connect to database apoteker
   include_once 'koneksi/koneksi_apoteker.php';
 
+  $term = trim(strip_tags(strtoupper($_GET['term'])));
+
   // sql
-  $sql_lokal = "select * from rekam_medis";
-  $sql_lokal_resepsionis = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien@to_resepsionis r on d.id_pasien = r.id_pasien join pelayanan@to_resepsionis p on d.id_pelayanan = p.id_pelayanan join perawat@to_resepsionis pr on d.id_perawat = pr.id_perawat";
-  $sql_lokal_pusat = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien@to_pusat r on d.id_pasien = r.id_pasien join pelayanan@to_pusat p on d.id_pelayanan = p.id_pelayanan join perawat@to_pusat pr on d.id_perawat = pr.id_perawat";
-  $sql_pusat = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien r on d.id_pasien = r.id_pasien join pelayanan p on d.id_pelayanan = p.id_pelayanan join perawat pr on d.id_perawat = pr.id_perawat";
-  $sql_resepsionis = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien r on d.id_pasien = r.id_pasien join pelayanan p on d.id_pelayanan = p.id_pelayanan join perawat pr on d.id_perawat = pr.id_perawat";
-  $sql_apoteker = "select * from rekam_medis";
+  $sql_lokal = "select * from rekam_medis WHERE id_daftar LIKE '".$term."%' AND ROWNUM < 8";
+  $sql_lokal_resepsionis = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien@to_resepsionis r on d.id_pasien = r.id_pasien join pelayanan@to_resepsionis p on d.id_pelayanan = p.id_pelayanan join perawat@to_resepsionis pr on d.id_perawat = pr.id_perawat  WHERE id_daftar LIKE '".$term."%' AND ROWNUM < 8";
+  $sql_lokal_pusat = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien@to_pusat r on d.id_pasien = r.id_pasien join pelayanan@to_pusat p on d.id_pelayanan = p.id_pelayanan join perawat@to_pusat pr on d.id_perawat = pr.id_perawat  WHERE id_daftar LIKE '".$term."%' AND ROWNUM < 8";
+  $sql_pusat = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien r on d.id_pasien = r.id_pasien join pelayanan p on d.id_pelayanan = p.id_pelayanan join perawat pr on d.id_perawat = pr.id_perawat  WHERE id_daftar LIKE '".$term."%' AND ROWNUM < 8";
+  $sql_resepsionis = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien r on d.id_pasien = r.id_pasien join pelayanan p on d.id_pelayanan = p.id_pelayanan join perawat pr on d.id_perawat = pr.id_perawat  WHERE id_daftar LIKE '".$term."%' AND ROWNUM < 8";
+  $sql_apoteker = "select * from rekam_medis WHERE id_daftar LIKE '".$term."%' AND ROWNUM < 8";
 
   // logika basis data terdistribusi id rekam_medis
   if ($status_lokal == "ON" && $status_resepsionis == "ON") {
