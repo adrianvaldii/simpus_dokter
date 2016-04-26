@@ -3,162 +3,266 @@
   include_once 'koneksi/koneksi_lokal.php';
   include_once 'koneksi/koneksi_pusat.php';
   include_once 'koneksi/koneksi_resepsionis.php';
+  include_once 'koneksi/koneksi_apoteker.php';
 
   // timezone
   date_default_timezone_set('Asia/Jakarta');
 
   // insert data to database
-  $status = "";
+  $status_alert = "";
 
   if(isset($_POST['submit'])){
     $id_daftar = $_POST['id_daftar'];
+    $id_pasien = $_POST['id_pasien'];
     $id_dokter = $_POST['daftar_dokter'];
     $anamnesa = $_POST['anamnesa'];
     $diagnosis = $_POST['diagnosis'];
     $pemeriksaan = $_POST['pemeriksaan'];
     $terapi = $_POST['terapi'];
+    $hasil_lab = $_POST['hasil_lab'];
     $status = $_POST['status'];
 
     // query
-    $query_dokter = oci_parse($conn_lokal, "MERGE INTO rekam_medis USING dual ON (id_daftar = :id_daftar)
+    $query_lokal = oci_parse($conn_lokal, "MERGE INTO rekam_medis USING dual ON (id_daftar = :id_daftar)
                                             WHEN MATCHED THEN UPDATE SET id_dokter = :id_dokter, anamnesa = :anamnesa,
                                             diagnosis = :diagnosis, pemeriksaan = :pemeriksaan, terapi = :terapi,
-                                            status = :status
-                                            WHEN NOT MATCHED THEN INSERT (id_daftar, id_dokter, anamnesa, diagnosis, pemeriksaan, terapi, status)
-                                            VALUES (:id_daftar, :id_dokter, :anamnesa, :diagnosis, :pemeriksaan, :terapi, :status)");
+                                            status = :status, id_pasien = :id_pasien, hasil_lab = :hasil_lab
+                                            WHEN NOT MATCHED THEN INSERT (id_daftar, id_dokter, id_pasien, anamnesa, diagnosis, pemeriksaan, terapi, hasil_lab, status)
+                                            VALUES (:id_daftar, :id_dokter, :id_pasien, :anamnesa, :diagnosis, :pemeriksaan, :terapi, :hasil_lab, :status)");
     $query_pusat = oci_parse($conn_pusat, "MERGE INTO rekam_medis USING dual ON (id_daftar = :id_daftar)
                                             WHEN MATCHED THEN UPDATE SET id_dokter = :id_dokter, anamnesa = :anamnesa,
                                             diagnosis = :diagnosis, pemeriksaan = :pemeriksaan, terapi = :terapi,
-                                            status = :status
-                                            WHEN NOT MATCHED THEN INSERT (id_daftar, id_dokter, anamnesa, diagnosis, pemeriksaan, terapi, status)
-                                            VALUES (:id_daftar, :id_dokter, :anamnesa, :diagnosis, :pemeriksaan, :terapi, :status)");
+                                            status = :status, id_pasien = :id_pasien, hasil_lab = :hasil_lab
+                                            WHEN NOT MATCHED THEN INSERT (id_daftar, id_dokter, id_pasien, anamnesa, diagnosis, pemeriksaan, terapi, hasil_lab, status)
+                                            VALUES (:id_daftar, :id_dokter, :id_pasien, :anamnesa, :diagnosis, :pemeriksaan, :terapi, :hasil_lab, :status)");
     $query_resepsionis = oci_parse($conn_resepsionis, "MERGE INTO rekam_medis USING dual ON (id_daftar = :id_daftar)
                                             WHEN MATCHED THEN UPDATE SET id_dokter = :id_dokter, anamnesa = :anamnesa,
                                             diagnosis = :diagnosis, pemeriksaan = :pemeriksaan, terapi = :terapi,
-                                            status = :status
-                                            WHEN NOT MATCHED THEN INSERT (id_daftar, id_dokter, anamnesa, diagnosis, pemeriksaan, terapi, status)
-                                            VALUES (:id_daftar, :id_dokter, :anamnesa, :diagnosis, :pemeriksaan, :terapi, :status)");
+                                            status = :status, id_pasien = :id_pasien, hasil_lab = :hasil_lab
+                                            WHEN NOT MATCHED THEN INSERT (id_daftar, id_dokter, id_pasien, anamnesa, diagnosis, pemeriksaan, terapi, hasil_lab, status)
+                                            VALUES (:id_daftar, :id_dokter, :id_pasien, :anamnesa, :diagnosis, :pemeriksaan, :terapi, :hasil_lab, :status)");
+    $query_apoteker = oci_parse($conn_apoteker, "MERGE INTO rekam_medis USING dual ON (id_daftar = :id_daftar)
+                                            WHEN MATCHED THEN UPDATE SET id_dokter = :id_dokter, anamnesa = :anamnesa,
+                                            diagnosis = :diagnosis, pemeriksaan = :pemeriksaan, terapi = :terapi,
+                                            status = :status, id_pasien = :id_pasien, hasil_lab = :hasil_lab
+                                            WHEN NOT MATCHED THEN INSERT (id_daftar, id_dokter, id_pasien, anamnesa, diagnosis, pemeriksaan, terapi, hasil_lab, status)
+                                            VALUES (:id_daftar, :id_dokter, :id_pasien, :anamnesa, :diagnosis, :pemeriksaan, :terapi, :hasil_lab, :status)");
     // binding data untuk server dokter
-    oci_bind_by_name($query_dokter, ":id_daftar", $id_daftar);
-    oci_bind_by_name($query_dokter, ":id_dokter", $id_dokter);
-    oci_bind_by_name($query_dokter, ":anamnesa", $anamnesa);
-    oci_bind_by_name($query_dokter, ":diagnosis", $diagnosis);
-    oci_bind_by_name($query_dokter, ":pemeriksaan", $pemeriksaan);
-    oci_bind_by_name($query_dokter, ":terapi" , $terapi);
-    oci_bind_by_name($query_dokter, ":status" , $status);
+    oci_bind_by_name($query_lokal, ":id_daftar", $id_daftar);
+    oci_bind_by_name($query_lokal, ":id_pasien", $id_pasien);
+    oci_bind_by_name($query_lokal, ":id_dokter", $id_dokter);
+    oci_bind_by_name($query_lokal, ":anamnesa", $anamnesa);
+    oci_bind_by_name($query_lokal, ":diagnosis", $diagnosis);
+    oci_bind_by_name($query_lokal, ":pemeriksaan", $pemeriksaan);
+    oci_bind_by_name($query_lokal, ":terapi" , $terapi);
+    oci_bind_by_name($query_lokal, ":hasil_lab" , $hasil_lab);
+    oci_bind_by_name($query_lokal, ":status" , $status);
     // binding data untuk server resepsionis
     oci_bind_by_name($query_resepsionis, ":id_daftar", $id_daftar);
+    oci_bind_by_name($query_resepsionis, ":id_pasien", $id_pasien);
     oci_bind_by_name($query_resepsionis, ":id_dokter", $id_dokter);
     oci_bind_by_name($query_resepsionis, ":anamnesa", $anamnesa);
     oci_bind_by_name($query_resepsionis, ":diagnosis", $diagnosis);
     oci_bind_by_name($query_resepsionis, ":pemeriksaan", $pemeriksaan);
     oci_bind_by_name($query_resepsionis, ":terapi" , $terapi);
+    oci_bind_by_name($query_resepsionis, ":hasil_lab" , $hasil_lab);
     oci_bind_by_name($query_resepsionis, ":status" , $status);
     // binding data untuk server pusat
     oci_bind_by_name($query_pusat, ":id_daftar", $id_daftar);
+    oci_bind_by_name($query_pusat, ":id_pasien", $id_pasien);
     oci_bind_by_name($query_pusat, ":id_dokter", $id_dokter);
     oci_bind_by_name($query_pusat, ":anamnesa", $anamnesa);
     oci_bind_by_name($query_pusat, ":diagnosis", $diagnosis);
     oci_bind_by_name($query_pusat, ":pemeriksaan", $pemeriksaan);
     oci_bind_by_name($query_pusat, ":terapi" , $terapi);
+    oci_bind_by_name($query_pusat, ":hasil_lab" , $hasil_lab);
     oci_bind_by_name($query_pusat, ":status" , $status);
+    // binding data untuk server apoteker
+    oci_bind_by_name($query_apoteker, ":id_daftar", $id_daftar);
+    oci_bind_by_name($query_apoteker, ":id_pasien", $id_pasien);
+    oci_bind_by_name($query_apoteker, ":id_dokter", $id_dokter);
+    oci_bind_by_name($query_apoteker, ":anamnesa", $anamnesa);
+    oci_bind_by_name($query_apoteker, ":diagnosis", $diagnosis);
+    oci_bind_by_name($query_apoteker, ":pemeriksaan", $pemeriksaan);
+    oci_bind_by_name($query_apoteker, ":terapi" , $terapi);
+    oci_bind_by_name($query_apoteker, ":hasil_lab" , $hasil_lab);
+    oci_bind_by_name($query_apoteker, ":status" , $status);
 
-    if ($status_lokal == "ON" && $status_pusat == "ON" && $status_resepsionis == "ON") {
-        // input to database dokter
-        $result_dokter = oci_execute($query_dokter);
+    // backup code
+    // input to database lokal
+    $result_lokal = oci_execute($query_lokal);
+    oci_commit($conn_lokal);
+    // input to database pusat
+    $result_pusat = oci_execute($query_pusat);
+    oci_commit($conn_pusat);
+    // input to database resepsionis
+    $result_resepsionis = oci_execute($query_resepsionis);
+    oci_commit($conn_resepsionis);
+    // input to database apoteker
+    $result_apoteker = oci_execute($query_apoteker);
+    oci_commit($conn_apoteker);
+
+    $status_alert = "Data berhasil ditambahkan pada ketiga server";
+
+    // logika basis data terdistribusi
+    if ($status_lokal == "ON" && $status_pusat == "ON" && $status_resepsionis == "ON" && $status_apoteker == "ON") {
+        // input to database lokal
+        $result_lokal = oci_execute($query_lokal);
         oci_commit($conn_lokal);
-
-        // oci_close($conn_lokal);
-
+        // input to database pusat
+        $result_pusat = oci_execute($query_pusat);
+        oci_commit($conn_pusat);
         // input to database resepsionis
         $result_resepsionis = oci_execute($query_resepsionis);
         oci_commit($conn_resepsionis);
+        // input to database apoteker
+        $result_apoteker = oci_execute($query_apoteker);
+        oci_commit($conn_apoteker);
 
-        // oci_close($conn_resepsionis);
+        $status_alert = "Data berhasil ditambahkan pada server Dokter, Pusat, Resepsionis, dan Apoteker!";
 
+    } elseif ($status_lokal == "ON" && $status_pusat == "OFF" && $status_resepsionis == "OFF" && $status_apoteker == "OFF") {
+        // input to database lokal
+        $result_lokal = oci_execute($query_lokal);
+        oci_commit($conn_lokal);
+
+        $status_alert = "Data berhasil ditambahkan pada server Dokter!";
+
+    } elseif ($status_lokal == "OFF" && $status_pusat == "ON" && $status_resepsionis == "OFF" && $status_apoteker == "OFF") {
         // input to database pusat
         $result_pusat = oci_execute($query_pusat);
         oci_commit($conn_pusat);
 
-        // oci_close($conn_pusat);
+        $status_alert = "Data berhasil ditambahkan pada server Pusat!";
 
-        $status = "Data berhasil ditambahkan pada ketiga server";
-
-    } elseif ($status_lokal == "ON" && $status_pusat == "OFF" && $status_resepsionis == "OFF") {
-        // input to database dokter
-        $result_dokter = oci_execute($query_dokter);
-        oci_commit($conn_lokal);
-
-        // oci_close($conn_lokal);
-
-        $status = "Data berhasil ditambahkan pada satu server (Dokter)";
-
-    } elseif ($status_lokal == "OFF" && $status_pusat == "ON" && $status_resepsionis == "OFF") {
-        // input to database pusat
-        $result_pusat = oci_execute($query_pusat);
-        oci_commit($conn_pusat);
-
-        // oci_close($conn_pusat);
-
-        $status = "Data berhasil ditambahkan pada satu server (Pusat)";
-
-    } elseif ($status_lokal == "OFF" && $status_pusat == "OFF" && $status_resepsionis == "ON") {
+    } elseif ($status_lokal == "OFF" && $status_pusat == "OFF" && $status_resepsionis == "ON" && $status_apoteker == "OFF") {
         // input to database resepsionis
         $result_resepsionis = oci_execute($query_resepsionis);
         oci_commit($conn_resepsionis);
 
-        // oci_close($conn_resepsionis);
+        $status_alert = "Data berhasil ditambahkan pada server Resepsionis!";
 
-        $status = "Data berhasil ditambahkan pada satu server (Resepsionis)";
+    } elseif ($status_lokal == "OFF" && $status_pusat == "OFF" && $status_resepsionis == "OFF" && $status_apoteker == "ON") {
+        // input to database apoteker
+        $result_apoteker = oci_execute($query_apoteker);
+        oci_commit($conn_apoteker);
 
-    } elseif ($status_lokal == "ON" && $status_pusat == "ON" && $status_resepsionis == "OFF") {
-        // input to database dokter
-        $result_dokter = oci_execute($query_dokter);
+        $status_alert = "Data berhasil ditambahkan pada server Apoteker!";
+
+    } elseif ($status_lokal == "ON" && $status_pusat == "ON" && $status_resepsionis == "OFF" && $status_apoteker == "OFF") {
+        // input to database lokal
+        $result_lokal = oci_execute($query_lokal);
         oci_commit($conn_lokal);
-
-        // oci_close($conn_lokal);
-
         // input to database pusat
         $result_pusat = oci_execute($query_pusat);
         oci_commit($conn_pusat);
 
-        // oci_close($conn_pusat);
+        $status_alert = "Data berhasil ditambahkan pada server Dokter dan Pusat!";
 
-        $status = "Data berhasil ditambahkan pada kedua server (Dokter & Pusat)";
-
-    } elseif ($status_lokal == "ON" && $status_pusat == "OFF" && $status_resepsionis == "ON") {
-        // input to database dokter
-        $result_dokter = oci_execute($query_dokter);
+    } elseif ($status_lokal == "ON" && $status_pusat == "OFF" && $status_resepsionis == "ON" && $status_apoteker == "OFF") {
+        // input to database lokal
+        $result_lokal = oci_execute($query_lokal);
         oci_commit($conn_lokal);
-
-        // oci_close($conn_lokal);
-
         // input to database resepsionis
         $result_resepsionis = oci_execute($query_resepsionis);
         oci_commit($conn_resepsionis);
 
-        // oci_close($conn_resepsionis);
+        $status_alert = "Data berhasil ditambahkan pada server Dokter dan Resepsionis!";
 
-        $status = "Data berhasil ditambahkan pada kedua server (Resepsionis & Dokter)";
+    } elseif ($status_lokal == "ON" && $status_pusat == "OFF" && $status_resepsionis == "OFF" && $status_apoteker == "ON") {
+        // input to database lokal
+        $result_lokal = oci_execute($query_lokal);
+        oci_commit($conn_lokal);
+        // input to database apoteker
+        $result_apoteker = oci_execute($query_apoteker);
+        oci_commit($conn_apoteker);
 
-    } elseif ($status_lokal == "OFF" && $status_pusat == "ON" && $status_resepsionis == "ON") {
+        $status_alert = "Data berhasil ditambahkan pada server Dokter dan Apoteker!";
+
+    } elseif ($status_lokal == "OFF" && $status_pusat == "ON" && $status_resepsionis == "ON" && $status_apoteker == "OFF") {
         // input to database pusat
         $result_pusat = oci_execute($query_pusat);
         oci_commit($conn_pusat);
-
-        // oci_close($conn_pusat);
-
         // input to database resepsionis
         $result_resepsionis = oci_execute($query_resepsionis);
         oci_commit($conn_resepsionis);
 
-        // oci_close($conn_resepsionis);
+        $status_alert = "Data berhasil ditambahkan pada server Pusat dan Resepsionis!";
 
-        $status = "Data berhasil ditambahkan pada kedua server (Pusat & Resepsionis)";
+    } elseif ($status_lokal == "OFF" && $status_pusat == "ON" && $status_resepsionis == "OFF" && $status_apoteker == "ON") {
+        // input to database pusat
+        $result_pusat = oci_execute($query_pusat);
+        oci_commit($conn_pusat);
+        // input to database apoteker
+        $result_apoteker = oci_execute($query_apoteker);
+        oci_commit($conn_apoteker);
+
+        $status_alert = "Data berhasil ditambahkan pada server Pusat dan Apoteker!";
+
+    } elseif ($status_lokal == "OFF" && $status_pusat == "OFF" && $status_resepsionis == "ON" && $status_apoteker == "ON") {
+        // input to database resepsionis
+        $result_resepsionis = oci_execute($query_resepsionis);
+        oci_commit($conn_resepsionis);
+        // input to database apoteker
+        $result_apoteker = oci_execute($query_apoteker);
+        oci_commit($conn_apoteker);
+
+        $status_alert = "Data berhasil ditambahkan pada server Resepsionis dan Apoteker!";
+
+    } elseif ($status_lokal == "ON" && $status_pusat == "OFF" && $status_resepsionis == "ON" && $status_apoteker == "ON") {
+      // input to database lokal
+      $result_lokal = oci_execute($query_lokal);
+      oci_commit($conn_lokal);
+      // input to database resepsionis
+      $result_resepsionis = oci_execute($query_resepsionis);
+      oci_commit($conn_resepsionis);
+      // input to database apoteker
+      $result_apoteker = oci_execute($query_apoteker);
+      oci_commit($conn_apoteker);
+
+      $status_alert = "Data berhasil ditambahkan pada server Dokter, Resepsionis, dan Apoteker!";
+
+    } elseif ($status_lokal == "ON" && $status_pusat == "ON" && $status_resepsionis == "OFF" && $status_apoteker == "ON") {
+        // input to database lokal
+        $result_lokal = oci_execute($query_lokal);
+        oci_commit($conn_lokal);
+        // input to database pusat
+        $result_pusat = oci_execute($query_pusat);
+        oci_commit($conn_pusat);
+        // input to database apoteker
+        $result_apoteker = oci_execute($query_apoteker);
+        oci_commit($conn_apoteker);
+
+        $status_alert = "Data berhasil ditambahkan pada server Dokter, Pusat, dan Apoteker!";
+
+    } elseif ($status_lokal == "ON" && $status_pusat == "ON" && $status_resepsionis == "ON" && $status_apoteker == "OFF") {
+        // input to database lokal
+        $result_lokal = oci_execute($query_lokal);
+        oci_commit($conn_lokal);
+        // input to database pusat
+        $result_pusat = oci_execute($query_pusat);
+        oci_commit($conn_pusat);
+        // input to database resepsionis
+        $result_resepsionis = oci_execute($query_resepsionis);
+        oci_commit($conn_resepsionis);
+
+        $status_alert = "Data berhasil ditambahkan pada server Dokter, Pusat, dan Resepsionis!";
+
+    } elseif ($status_lokal == "OFF" && $status_pusat == "ON" && $status_resepsionis == "ON" && $status_apoteker == "ON") {
+        // input to database pusat
+        $result_pusat = oci_execute($query_pusat);
+        oci_commit($conn_pusat);
+        // input to database resepsionis
+        $result_resepsionis = oci_execute($query_resepsionis);
+        oci_commit($conn_resepsionis);
+        // input to database apoteker
+        $result_apoteker = oci_execute($query_apoteker);
+        oci_commit($conn_apoteker);
+
+        $status_alert = "Data berhasil ditambahkan pada server Pusat, Resepsionis, dan Apoteker!";
+
     }
-
   }
-
 ?>
 
 <!DOCTYPE html>
@@ -208,9 +312,9 @@
             <div class="col-md-12">
               <?php
                 if (isset($_POST['submit'])) {
-                  ?><div class="alert alert-success alert-dismissible" role="alert">
+                  ?><div class="alert alert-info alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <?php echo $status; ?>
+                    <?php echo $status_alert; ?>
                   </div><?php
                 }
               ?>
@@ -226,7 +330,7 @@
                     </div>
                     <div class="form-group">
                       <label>ID Pasien</label>
-                      <input type="text" name="id_pasien" class="form-control" readonly="true">
+                      <input type="text" name="id_pasien" class="form-control">
                     </div>
                     <div class="form-group">
                       <label>Tanggal Daftar</label>
@@ -241,16 +345,18 @@
                       <input type="text" name="umur" class="form-control" readonly="true">
                     </div>
                     <div class="form-group">
-                      <label>Golongan Darah</label>
-                      <input type="text" name="gol_darah" class="form-control" readonly="true">
-                    </div>
-                    <div class="form-group">
                       <label>Nama Pelayanan</label>
                       <input type="text" name="nama_pelayanan" class="form-control" readonly="true">
                     </div>
                     <div class="form-group">
                       <label>Nama Perawat</label>
                       <input type="text" name="nama_perawat" class="form-control" readonly="true">
+                    </div>
+                  </div>
+                  <!-- button -->
+                  <div class="btn-daftar">
+                    <div class="form-group">
+                      <button type="submit" name="submit" class="btn btn-primary btn-lg btn-block">Daftar</button>
                     </div>
                   </div>
                 </div>
@@ -314,6 +420,11 @@
                       <small class="detail-form">Terapi pasien. Harus diisi. Jika tidak ada isikan 'Tidak Ada'.</small>
                     </div>
                     <div class="form-group">
+                      <label>Hasil Laboratorium</label>
+                      <input type="text" name="hasil_lab" class="form-control">
+                      <small class="detail-form">Hasil Laboratorium Pasien. Jika tidak ada isikan 'Tidak Ada'.</small>
+                    </div>
+                    <div class="form-group">
                       <label>Status</label>
                       <select class="form-control" name="status">
                         <option>-- Pilih Status --</option>
@@ -321,12 +432,6 @@
                         <option value="belum">Belum diperiksa</option>
                       </select>
                       <small class="detail-form">Status pengobatan pasien. Harus diisi.</small>
-                    </div>
-                  </div>
-                  <!-- button -->
-                  <div class="btn-daftar">
-                    <div class="form-group">
-                      <button type="submit" name="submit" class="btn btn-primary btn-lg btn-block">Daftar</button>
                     </div>
                   </div>
                   </div>

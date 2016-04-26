@@ -6,6 +6,8 @@
   include_once 'koneksi/koneksi_pusat.php';
   // connect to database resepsionis
   include_once 'koneksi/koneksi_resepsionis.php';
+  // connect to database apoteker
+  include_once 'koneksi/koneksi_apoteker.php';
 
   // sql
   $sql_lokal = "select * from rekam_medis";
@@ -13,6 +15,7 @@
   $sql_lokal_pusat = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien@to_pusat r on d.id_pasien = r.id_pasien join pelayanan@to_pusat p on d.id_pelayanan = p.id_pelayanan join perawat@to_pusat pr on d.id_perawat = pr.id_perawat";
   $sql_pusat = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien r on d.id_pasien = r.id_pasien join pelayanan p on d.id_pelayanan = p.id_pelayanan join perawat pr on d.id_perawat = pr.id_perawat";
   $sql_resepsionis = "select d.id_daftar, d.tgl_daftar, d.id_pasien, r.nama_pasien, r.umur, r.gol_darah, p.nama_pelayanan, pr.nama_perawat from rekam_medis d join pasien r on d.id_pasien = r.id_pasien join pelayanan p on d.id_pelayanan = p.id_pelayanan join perawat pr on d.id_perawat = pr.id_perawat";
+  $sql_apoteker = "select * from rekam_medis";
 
   // logika basis data terdistribusi id rekam_medis
   if ($status_lokal == "ON" && $status_resepsionis == "ON") {
@@ -60,6 +63,7 @@
 
     while ($data = oci_fetch_array($data_lokal, OCI_BOTH)) {
       $row['value'] = $data['ID_DAFTAR'];
+      $row['id_pasien'] = $data['ID_PASIEN'];
       $row_set[] = $row;
     }
 
@@ -98,6 +102,19 @@
       $row['gol_darah'] = $data['GOL_DARAH'];
       $row['nama_pelayanan'] = $data['NAMA_PELAYANAN'];
       $row['nama_perawat'] = $data['NAMA_PERAWAT'];
+      $row_set[] = $row;
+    }
+
+    echo json_encode($row_set);
+
+  } elseif ($status_lokal == "OFF" && $status_apoteker == "ON") {
+    // eksekusi lokal, resepsionis
+    $data_apoteker = oci_parse($conn_apoteker, $sql_apoteker);
+    oci_execute($data_apoteker);
+
+    while ($data = oci_fetch_array($data_apoteker, OCI_BOTH)) {
+      $row['value'] = $data['ID_DAFTAR'];
+      $row['id_pasien'] = $data['ID_PASIEN'];
       $row_set[] = $row;
     }
 
