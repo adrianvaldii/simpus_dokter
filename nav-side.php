@@ -2,7 +2,7 @@
   <ul>
     <li>OVERVIEW
       <ul>
-        <li><a href="index.php"><span class="glyphicon glyphicon-home"></span> Dashboard</a></li>
+        <li><a href="dashboard.php"><span class="glyphicon glyphicon-home"></span> Dashboard</a></li>
       </ul>
     </li>
     <li><a href="#">TRANSAKSI</a>

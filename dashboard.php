@@ -1,9 +1,10 @@
 <?php session_start();
   // error_reporting(0);
 
-  include 'koneksi/koneksi_pusat.php';
-  include 'koneksi/koneksi_lokal.php';
-  include 'koneksi/koneksi_resepsionis.php';
+  include_once 'koneksi/koneksi_pusat.php';
+  include_once 'koneksi/koneksi_lokal.php';
+  include_once 'koneksi/koneksi_resepsionis.php';
+  include_once 'koneksi/koneksi_apoteker.php';
 
   if(empty($_SESSION['user'])){
     header("Location: index.php?message=please+login");
@@ -95,6 +96,15 @@
                     ?><span class="status-server label label-success"><?php echo $status_resepsionis; ?></span><?php
                   }else {
                     ?><span class="status-server label label-danger"><?php echo $status_resepsionis; ?></span><?php
+                  }
+                ?>
+                <div class="clear"></div>
+                <p class="nama-server">Server Apoteker</p>
+                <?php
+                  if ($status_apoteker == "ON") {
+                    ?><span class="status-server label label-success"><?php echo $status_apoteker; ?></span><?php
+                  }else {
+                    ?><span class="status-server label label-danger"><?php echo $status_apoteker; ?></span><?php
                   }
                 ?>
                 <div class="clear"></div>
