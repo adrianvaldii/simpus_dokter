@@ -95,22 +95,6 @@
     oci_bind_by_name($query_apoteker, ":hasil_lab" , $hasil_lab);
     oci_bind_by_name($query_apoteker, ":status" , $status);
 
-    // backup code
-    // input to database lokal
-    $result_lokal = oci_execute($query_lokal);
-    oci_commit($conn_lokal);
-    // input to database pusat
-    $result_pusat = oci_execute($query_pusat);
-    oci_commit($conn_pusat);
-    // input to database resepsionis
-    $result_resepsionis = oci_execute($query_resepsionis);
-    oci_commit($conn_resepsionis);
-    // input to database apoteker
-    $result_apoteker = oci_execute($query_apoteker);
-    oci_commit($conn_apoteker);
-
-    $status_alert = "Data berhasil ditambahkan pada ketiga server";
-
     // logika basis data terdistribusi
     if ($status_lokal == "ON" && $status_pusat == "ON" && $status_resepsionis == "ON" && $status_apoteker == "ON") {
         // input to database lokal
