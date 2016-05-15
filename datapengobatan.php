@@ -19,7 +19,10 @@
     $stmt = $mysqli_lokal->query($query);
     while ($data = $stmt->fetch_array(MYSQLI_ASSOC)) {
       $row['value'] = $data['id_daftar'];
+      $row['tgl_daftar'] = $data['tgl_daftar'];
       $row['id_pasien'] = $data['id_pasien'];
+      $row['id_pelayanan'] = $data['id_pelayanan'];
+      $row['id_perawat'] = $data['id_perawat'];
       $row_set[] = $row;
     }
     echo json_encode($row_set);
@@ -27,7 +30,10 @@
     $stmt = $mysqli_pusat->query($query);
     while ($data = $stmt->fetch_array(MYSQLI_ASSOC)) {
       $row['value'] = $data['id_daftar'];
+      $row['tgl_daftar'] = $data['tgl_daftar'];
       $row['id_pasien'] = $data['id_pasien'];
+      $row['id_pelayanan'] = $data['id_pelayanan'];
+      $row['id_perawat'] = $data['id_perawat'];
       $row_set[] = $row;
     }
     echo json_encode($row_set);
@@ -35,7 +41,10 @@
     $stmt = $mysqli_resepsionis->query($query);
     while ($data = $stmt->fetch_array(MYSQLI_ASSOC)) {
       $row['value'] = $data['id_daftar'];
+      $row['tgl_daftar'] = $data['tgl_daftar'];
       $row['id_pasien'] = $data['id_pasien'];
+      $row['id_pelayanan'] = $data['id_pelayanan'];
+      $row['id_perawat'] = $data['id_perawat'];
       $row_set[] = $row;
     }
     echo json_encode($row_set);
@@ -43,7 +52,10 @@
     $stmt = $mysqli_apoteker->query($query);
     while ($data = $stmt->fetch_array(MYSQLI_ASSOC)) {
       $row['value'] = $data['id_daftar'];
+      $row['tgl_daftar'] = $data['tgl_daftar'];
       $row['id_pasien'] = $data['id_pasien'];
+      $row['id_pelayanan'] = $data['id_pelayanan'];
+      $row['id_perawat'] = $data['id_perawat'];
       $row_set[] = $row;
     }
     echo json_encode($row_set);
