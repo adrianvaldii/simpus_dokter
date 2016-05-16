@@ -48,7 +48,7 @@
   }
   // pusat to dokter
   if (isset($_POST['submit_dokter'])) {
-    $result = $mysqli_lokal->query($query_dokter);
+    $result = $mysqli_pusat->query($query_dokter);
 
     if ($result) {
       $status = "Good Job! Data rekam medis berhasil disinkronisasi.";
@@ -77,7 +77,7 @@
     } else {
       $status = "Bad News! Data rekam medis gagal disinkronisasi.";
     }
-    
+
   }
 ?>
 <!DOCTYPE html>
