@@ -42,10 +42,10 @@
     $query_merge = "INSERT INTO rekam_medis SELECT * FROM skripsi_resepsionis.rekam_medis r ON DUPLICATE KEY UPDATE id_daftar = r.id_daftar";
 
     // query
-    $query = "REPLACE INTO rekam_medis SET id_daftar = '$id_daftar', tgl_daftar = '$tgl_daftar',
+    $query = "UPDATE rekam_medis SET tgl_daftar = '$tgl_daftar',
               id_pasien = '$id_pasien', id_pelayanan = '$id_pelayanan', id_perawat = '$id_perawat',
               id_dokter = '$id_dokter', anamnesa = '$anamnesa', diagnosis = '$anamnesa', pemeriksaan = '$pemeriksaan',
-              terapi = '$terapi', hasil_lab = '$hasil_lab', status = '$status'";
+              terapi = '$terapi', hasil_lab = '$hasil_lab', status = '$status' WHERE id_daftar = '$id_daftar'";
 
     // logika basis data terdistribusi
     if ($stat_mylokal == "ON" && $stat_mypusat == "ON" && $stat_myresepsionis == "ON" && $stat_myapoteker == "ON") {
@@ -259,7 +259,7 @@
                   <!-- button -->
                   <div class="btn-daftar">
                     <div class="form-group">
-                      <button type="submit" name="submit" class="btn btn-primary btn-lg btn-block">Daftar</button>
+                      <button type="submit" name="submit" class="btn btn-primary btn-lg btn-block">Update</button>
                     </div>
                   </div>
                 </div>
