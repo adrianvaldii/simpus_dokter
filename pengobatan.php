@@ -26,10 +26,6 @@
 
   if(isset($_POST['submit'])){
     $id_daftar = $_POST['id_daftar'];
-    $tgl_daftar = $_POST['tgl_daftar'];
-    $id_pasien = $_POST['id_pasien'];
-    $id_pelayanan = $_POST['id_pelayanan'];
-    $id_perawat = $_POST['id_perawat'];
     $id_dokter = $_POST['daftar_dokter'];
     $anamnesa = $_POST['anamnesa'];
     $diagnosis = $_POST['diagnosis'];
@@ -42,9 +38,7 @@
     $query_merge = "INSERT INTO rekam_medis SELECT * FROM skripsi_resepsionis.rekam_medis r ON DUPLICATE KEY UPDATE id_daftar = r.id_daftar";
 
     // query
-    $query = "UPDATE rekam_medis SET tgl_daftar = '$tgl_daftar',
-              id_pasien = '$id_pasien', id_pelayanan = '$id_pelayanan', id_perawat = '$id_perawat',
-              id_dokter = '$id_dokter', anamnesa = '$anamnesa', diagnosis = '$anamnesa', pemeriksaan = '$pemeriksaan',
+    $query = "UPDATE rekam_medis SET id_dokter = '$id_dokter', anamnesa = '$anamnesa', diagnosis = '$anamnesa', pemeriksaan = '$pemeriksaan',
               terapi = '$terapi', hasil_lab = '$hasil_lab', status = '$status' WHERE id_daftar = '$id_daftar'";
 
     // logika basis data terdistribusi
