@@ -8,8 +8,8 @@
   // mysql
   include_once 'koneksi/mysql_lokal.php';
   include_once 'koneksi/mysql_pusat.php';
-  include_once 'koneksi/mysql_resepsionis.php';
-  include_once 'koneksi/mysql_apoteker.php';
+  // include_once 'koneksi/mysql_resepsionis.php';
+  // include_once 'koneksi/mysql_apoteker.php';
 
   if(empty($_SESSION['user'])){
     header("Location: index.php?message=please+login");

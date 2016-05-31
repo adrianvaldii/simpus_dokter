@@ -7,9 +7,9 @@
   include_once 'koneksi/koneksi_apoteker.php';
   // mysql
   include_once 'koneksi/mysql_lokal.php';
-  include_once 'koneksi/mysql_pusat.php';
-  include_once 'koneksi/mysql_resepsionis.php';
-  include_once 'koneksi/mysql_apoteker.php';
+  // include_once 'koneksi/mysql_pusat.php';
+  // include_once 'koneksi/mysql_resepsionis.php';
+  // include_once 'koneksi/mysql_apoteker.php';
 
   // timezone
   date_default_timezone_set('Asia/Jakarta');
